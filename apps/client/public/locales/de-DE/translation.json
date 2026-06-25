@@ -1084,5 +1084,7 @@
   "Added {{name}} to favorites": "{{name}} zu Favoriten hinzugefügt",
   "Removed {{name}} from favorites": "{{name}} aus Favoriten entfernt",
   "Page menu for {{name}}": "Seitenmenü für {{name}}",
-  "Create subpage of {{name}}": "Unterseite von {{name}} erstellen"
+  "Create subpage of {{name}}": "Unterseite von {{name}} erstellen",
+  "Knowledge Graph": "Knowledge Graph",
+  "No page connections found. Create links between pages to see the graph!": "No page connections found. Create links between pages to see the graph!"
 }

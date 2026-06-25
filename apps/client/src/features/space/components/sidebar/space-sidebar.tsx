@@ -33,6 +33,8 @@ import { useTreeMutation } from "@/features/page/tree/hooks/use-tree-mutation.ts
 import { Link, useLocation, useParams } from "react-router-dom";
 import clsx from "clsx";
 import { useDisclosure } from "@mantine/hooks";
+import { IconGraph } from "@tabler/icons-react";
+import { KnowledgeGraphModal } from "../knowledge-graph";
 import SpaceSettingsModal from "@/features/space/components/settings-modal.tsx";
 import { useGetSpaceBySlugQuery } from "@/features/space/queries/space-query.ts";
 import { getSpaceUrl } from "@/lib/config.ts";
@@ -63,6 +65,8 @@ import { ErrorBoundary } from "react-error-boundary";
 export function SpaceSidebar() {
   const { t } = useTranslation();
   const location = useLocation();
+  const [graphOpened, { open: openGraph, close: closeGraph }] =
+    useDisclosure(false);
   const [opened, { open: openSettings, close: closeSettings }] =
     useDisclosure(false);
   const [mobileSidebarOpened] = useAtom(mobileSidebarAtom);
@@ -151,6 +155,18 @@ export function SpaceSidebar() {
                   className={classes.menuItemIcon}
                   stroke={2}
                 />
+
+
+                <UnstyledButton className={classes.menu} onClick={openGraph}>
+                  <div className={classes.menuItemInner}>
+                    <IconGraph
+                      size={18}
+                      className={classes.menuItemIcon}
+                      stroke={2}
+                    />
+                    <span>{t("Knowledge Graph")}</span>
+                  </div>
+                </UnstyledButton>
                 <span>{t("Space settings")}</span>
               </div>
             </UnstyledButton>
@@ -159,25 +175,25 @@ export function SpaceSidebar() {
               SpaceCaslAction.Manage,
               SpaceCaslSubject.Page,
             ) && (
-              <UnstyledButton
-                className={classes.menu}
-                onClick={() => {
-                  handleCreatePage();
-                  if (mobileSidebarOpened) {
-                    toggleMobileSidebar();
-                  }
-                }}
-              >
-                <div className={classes.menuItemInner}>
-                  <IconPlus
-                    size={18}
-                    className={classes.menuItemIcon}
-                    stroke={2}
-                  />
-                  <span>{t("New page")}</span>
-                </div>
-              </UnstyledButton>
-            )}
+                <UnstyledButton
+                  className={classes.menu}
+                  onClick={() => {
+                    handleCreatePage();
+                    if (mobileSidebarOpened) {
+                      toggleMobileSidebar();
+                    }
+                  }}
+                >
+                  <div className={classes.menuItemInner}>
+                    <IconPlus
+                      size={18}
+                      className={classes.menuItemIcon}
+                      stroke={2}
+                    />
+                    <span>{t("New page")}</span>
+                  </div>
+                </UnstyledButton>
+              )}
           </div>
         </div>
 
@@ -201,17 +217,17 @@ export function SpaceSidebar() {
                 SpaceCaslAction.Manage,
                 SpaceCaslSubject.Page,
               ) && (
-                <Tooltip label={t("Create page")} withArrow position="right">
-                  <ActionIcon
-                    variant="default"
-                    size={18}
-                    onClick={handleCreatePage}
-                    aria-label={t("Create page")}
-                  >
-                    <IconPlus />
-                  </ActionIcon>
-                </Tooltip>
-              )}
+                  <Tooltip label={t("Create page")} withArrow position="right">
+                    <ActionIcon
+                      variant="default"
+                      size={18}
+                      onClick={handleCreatePage}
+                      aria-label={t("Create page")}
+                    >
+                      <IconPlus />
+                    </ActionIcon>
+                  </Tooltip>
+                )}
             </Group>
           </Group>
 
@@ -222,6 +238,13 @@ export function SpaceSidebar() {
                 SpaceCaslAction.Manage,
                 SpaceCaslSubject.Page,
               )}
+            />
+
+            <KnowledgeGraphModal
+              spaceId={space?.id ?? ""}
+              spaceSlug={spaceSlug}
+              opened={graphOpened}
+              onClose={closeGraph}
             />
           </div>
         </div>

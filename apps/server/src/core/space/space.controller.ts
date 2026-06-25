@@ -1,3 +1,4 @@
+import { GraphService } from './services/graph.service';
 import {
   BadRequestException,
   Body,
@@ -6,6 +7,7 @@ import {
   HttpCode,
   HttpStatus,
   NotFoundException,
+  Param, // 👈 加上这个
   Post,
   UseGuards,
 } from '@nestjs/common';
@@ -44,6 +46,7 @@ export class SpaceController {
     private readonly spaceMemberRepo: SpaceMemberRepo,
     private readonly spaceAbility: SpaceAbilityFactory,
     private readonly workspaceAbility: WorkspaceAbilityFactory,
+    private readonly graphService: GraphService, // 👈 加上这一行
   ) {}
 
   @HttpCode(HttpStatus.OK)
@@ -271,5 +274,19 @@ export class SpaceController {
         'please provide either a userId or groupId and both',
       );
     }
+  }
+
+  //新增
+  @HttpCode(HttpStatus.OK)
+  @Post(':spaceId/graph')
+  async getSpaceGraph(
+    @Param('spaceId') spaceId: string,
+    @AuthUser() user: User,
+  ) {
+    const ability = await this.spaceAbility.createForUser(user, spaceId);
+    if (ability.cannot(SpaceCaslAction.Read, SpaceCaslSubject.Page)) {
+      throw new ForbiddenException();
+    }
+    return this.graphService.getSpaceGraph(spaceId);
   }
 }

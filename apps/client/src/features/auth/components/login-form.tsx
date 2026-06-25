@@ -42,7 +42,7 @@ export function LoginForm() {
     error,
   } = useWorkspacePublicDataQuery();
 
-  const form = useForm<FormValues>({
+  const form = useForm<FormValues>({ //逻辑部分
     validate: zod4Resolver(formSchema),
     initialValues: {
       email: "",
@@ -69,7 +69,7 @@ export function LoginForm() {
     return <Error404 />;
   }
 
-  return (
+  return (  //UI部分
     <AuthLayout>
       <Container size={420} className={classes.container}>
         <Box p="xl" className={classes.containerBox}>

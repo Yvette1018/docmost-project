@@ -605,4 +605,14 @@ export class PageRepo {
         .execute()
     );
   }
+
+  //新增
+  async findSpacePages(spaceId: string) {
+    return this.db
+      .selectFrom('pages')
+      .select(['id', 'title', 'icon', 'spaceId', 'slugId'])
+      .where('spaceId', '=', spaceId)
+      .where('deletedAt', 'is', null)
+      .execute();
+  }
 }

@@ -21,12 +21,16 @@ services:
       POSTGRES_DB: docmost
       POSTGRES_USER: docmost
       POSTGRES_PASSWORD: STRONG_DB_PASSWORD
+    ports:
+      - "5432:5432"  
     restart: unless-stopped
     volumes:
       - db_data:/var/lib/postgresql
 
   redis:
     image: redis:8
+    ports:
+      - "6379:6379"
     command: ["redis-server", "--appendonly", "yes", "--maxmemory-policy", "noeviction"]
     restart: unless-stopped
     volumes:

@@ -1,3 +1,4 @@
+//具体的接口清单，把每个后端API封装成一个函数
 import api from "@/lib/api-client";
 import {
   IChangePassword,
@@ -12,7 +13,7 @@ import {
 import { IWorkspace } from "@/features/workspace/types/workspace.types.ts";
 
 export async function login(data: ILogin): Promise<ILoginResponse> {
-  const response = await api.post<ILoginResponse>("/auth/login", data);
+  const response = await api.post<ILoginResponse>("/auth/login", data);  //后端接口登录POST
   return response.data;
 }
 

@@ -1,3 +1,4 @@
+//封装完整的业务逻辑，把接口调用、状态管理、页面跳转、错误提示都包在一起。
 import { useState } from "react";
 import {
   forgotPassword,

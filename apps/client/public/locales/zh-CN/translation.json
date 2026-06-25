@@ -1084,5 +1084,7 @@
   "Added {{name}} to favorites": "已将 {{name}} 添加到收藏",
   "Removed {{name}} from favorites": "已将 {{name}} 从收藏中移除",
   "Page menu for {{name}}": "{{name}} 的页面菜单",
-  "Create subpage of {{name}}": "创建 {{name}} 的子页面"
+  "Create subpage of {{name}}": "创建 {{name}} 的子页面",
+  "Knowledge Graph": "知识图谱",
+  "No page connections found. Create links between pages to see the graph!": "暂无页面关联。在页面之间创建链接即可查看知识图谱！"
 }

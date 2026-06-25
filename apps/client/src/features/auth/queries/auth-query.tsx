@@ -1,3 +1,4 @@
+//在 Service 层的基础上，加上缓存、状态管理、自动刷新等能力。
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import { getCollabToken, verifyUserToken } from "../services/auth-service";
 import { ICollabToken, IVerifyUserToken } from "../types/auth.types";
@@ -9,7 +10,7 @@ export function useVerifyUserTokenQuery(
   return useQuery({
     queryKey: ["verify-token", verify],
     queryFn: () => verifyUserToken(verify),
-    enabled: !!verify.token,
+    enabled: !!verify.token, //条件请求
     staleTime: 0,
   });
 }
@@ -23,13 +24,13 @@ export function useCollabToken(): UseQueryResult<ICollabToken, Error> {
     //refetchIntervalInBackground: true,
     refetchOnMount: true,
     //@ts-ignore
-    retry: (failureCount, error) => {
+    retry: (failureCount, error) => {  //重试策略
       if (isAxiosError(error) && error.response.status === 404) {
         return false;
       }
       return 10;
     },
-    retryDelay: (retryAttempt) => {
+    retryDelay: (retryAttempt) => {  //重试延迟
       // Exponential backoff: 5s, 10s, 20s, etc.
       return 5000 * Math.pow(2, retryAttempt - 1);
     },

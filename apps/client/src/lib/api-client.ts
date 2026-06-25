@@ -4,9 +4,9 @@ import { isCloud } from "@/lib/config.ts";
 
 const api: AxiosInstance = axios.create({
   baseURL: "/api",
-  withCredentials: true,
+  withCredentials: true, //携带cookie
 });
-
+//响应拦截器-成功情况
 api.interceptors.response.use(
   (response) => {
     // we need the response headers for these endpoints
@@ -25,10 +25,11 @@ api.interceptors.response.use(
 
     return response.data;
   },
+  //响应拦截器-失败情况
   (error) => {
     if (error.response) {
       switch (error.response.status) {
-        case 401: {
+        case 401: { //没登录或者token过期-->跳转到登录页
           const url = new URL(error.request.responseURL)?.pathname;
           if (url === "/api/auth/collab-token") return;
           if (window.location.pathname.startsWith("/share/")) return;
@@ -37,10 +38,10 @@ api.interceptors.response.use(
           redirectToLogin();
           break;
         }
-        case 403:
+        case 403: //没权限
           // Handle forbidden error
           break;
-        case 404:
+        case 404: //没找到
           // Handle not found error
           if (
             error.response.data.message
@@ -56,7 +57,7 @@ api.interceptors.response.use(
             }
           }
           break;
-        case 500:
+        case 500: //服务器错误
           // Handle internal server error
           break;
         default:
@@ -67,6 +68,7 @@ api.interceptors.response.use(
   },
 );
 
+//跳转登陆页面的函数
 function redirectToLogin() {
   const exemptPaths = [
     APP_ROUTE.AUTH.LOGIN,

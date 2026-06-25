@@ -157,6 +157,28 @@ export class BacklinkRepo {
         updatedAt: new Date(cursor.updatedAt),
         id: cursor.id,
       }),
-    });
+    });  
+  }
+
+
+  //新增
+  async findSpaceBacklinks(spaceId: string): Promise<Backlink[]> {
+    return this.db
+      .selectFrom('backlinks')
+      .innerJoin('pages as sourcePage', 'sourcePage.id', 'backlinks.sourcePageId')
+      .innerJoin('pages as targetPage', 'targetPage.id', 'backlinks.targetPageId')
+      .select([
+        'backlinks.id',
+        'backlinks.sourcePageId',
+        'backlinks.targetPageId',
+        'backlinks.workspaceId',
+        'backlinks.createdAt',
+        'backlinks.updatedAt',
+      ])
+      .where('sourcePage.spaceId', '=', spaceId)
+      .where('targetPage.spaceId', '=', spaceId)
+      .where('sourcePage.deletedAt', 'is', null)
+      .where('targetPage.deletedAt', 'is', null)
+      .execute();
   }
 }
