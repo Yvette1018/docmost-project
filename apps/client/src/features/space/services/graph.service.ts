@@ -1,5 +1,4 @@
-import api from '@/lib/api';
-
+import api from "@/lib/api-client";
 export interface GraphNode {
     id: string;
     title: string | null;
