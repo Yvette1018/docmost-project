@@ -20,7 +20,7 @@ export class BacklinkRepo {
   constructor(
     @InjectKysely() private readonly db: KyselyDB,
     private readonly spaceMemberRepo: SpaceMemberRepo,
-  ) {}
+  ) { }
 
   async findById(
     backlinkId: string,
@@ -157,7 +157,7 @@ export class BacklinkRepo {
         updatedAt: new Date(cursor.updatedAt),
         id: cursor.id,
       }),
-    });  
+    });
   }
 
 
