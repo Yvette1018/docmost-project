@@ -7,7 +7,7 @@ import { GraphService } from './services/graph.service';
 @Module({
   imports: [],
   controllers: [SpaceController],
-  providers: [SpaceService, SpaceMemberService, GraphService, ],
+  providers: [SpaceService, SpaceMemberService, GraphService],
   exports: [SpaceService, SpaceMemberService],
 })
-export class SpaceModule {}
+export class SpaceModule { }

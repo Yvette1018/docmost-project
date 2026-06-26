@@ -155,19 +155,18 @@ export function SpaceSidebar() {
                   className={classes.menuItemIcon}
                   stroke={2}
                 />
-
-
-                <UnstyledButton className={classes.menu} onClick={openGraph}>
-                  <div className={classes.menuItemInner}>
-                    <IconGraph
-                      size={18}
-                      className={classes.menuItemIcon}
-                      stroke={2}
-                    />
-                    <span>{t("Knowledge Graph")}</span>
-                  </div>
-                </UnstyledButton>
                 <span>{t("Space settings")}</span>
+              </div>
+            </UnstyledButton>
+
+            <UnstyledButton className={classes.menu} onClick={openGraph}>
+              <div className={classes.menuItemInner}>
+                <IconGraph
+                  size={18}
+                  className={classes.menuItemIcon}
+                  stroke={2}
+                />
+                <span>{t("Knowledge Graph")}</span>
               </div>
             </UnstyledButton>
 
@@ -240,12 +239,7 @@ export function SpaceSidebar() {
               )}
             />
 
-            <KnowledgeGraphModal
-              spaceId={space?.id ?? ""}
-              spaceSlug={spaceSlug}
-              opened={graphOpened}
-              onClose={closeGraph}
-            />
+
           </div>
         </div>
       </div>
@@ -254,6 +248,12 @@ export function SpaceSidebar() {
         opened={opened}
         onClose={closeSettings}
         spaceId={space?.slug}
+      />
+      <KnowledgeGraphModal
+        spaceId={space?.id ?? ""}
+        spaceSlug={spaceSlug}
+        opened={graphOpened}
+        onClose={closeGraph}
       />
     </>
   );
