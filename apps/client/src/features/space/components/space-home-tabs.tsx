@@ -1,9 +1,9 @@
-import { Text, Tabs, Space } from "@mantine/core";
-import { IconClockHour3, IconStar, IconUser } from "@tabler/icons-react";
+import { Group, Space, Stack, Tabs, Text } from "@mantine/core";
+import { IconClockHour3, IconGraph, IconStar, IconUser } from "@tabler/icons-react";
 import RecentChanges from "@/components/common/recent-changes";
 import FavoritesPages from "@/features/home/components/favorites-pages";
 import CreatedByMe from "@/features/home/components/created-by-me";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { useGetSpaceBySlugQuery } from "@/features/space/queries/space-query";
 import { useTranslation } from "react-i18next";
 import { useAtom } from "jotai";
@@ -40,6 +40,33 @@ export default function SpaceHomeTabs() {
           </Text>
         </Tabs.Tab>
       </Tabs.List>
+
+      <Space my="md" />
+
+      <Link
+        to={`/s/${spaceSlug}/graph`}
+        style={{ textDecoration: "none", color: "inherit" }}
+      >
+        <Group
+          gap="xs"
+          p="sm"
+          style={{
+            borderRadius: 8,
+            border: "1px solid var(--mantine-color-gray-3)",
+            cursor: "pointer",
+          }}
+        >
+          <IconGraph size={18} stroke={1.5} />
+          <Stack gap={2}>
+            <Text size="sm" fw={500}>
+              {t("Knowledge graph")}
+            </Text>
+            <Text size="xs" c="dimmed">
+              {t("Visual map of page references in this space")}
+            </Text>
+          </Stack>
+        </Group>
+      </Link>
 
       <Space my="md" />
 

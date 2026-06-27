@@ -12,6 +12,7 @@ import {
 } from '@nestjs/common';
 import { PageService } from './services/page.service';
 import { BacklinkService } from './services/backlink.service';
+import { PageGraphService } from './services/page-graph.service';
 import { PageAccessService } from './page-access/page-access.service';
 import { CreatePageDto } from './dto/create-page.dto';
 import { UpdatePageDto } from './dto/update-page.dto';
@@ -40,6 +41,7 @@ import { CreatedByUserDto } from './dto/created-by-user.dto';
 import { DuplicatePageDto } from './dto/duplicate-page.dto';
 import { DeletedPageDto } from './dto/deleted-page.dto';
 import { BacklinksListDto } from './dto/backlink.dto';
+import { PageGraphDto } from './dto/page-graph.dto';
 import { LabelService } from '../label/label.service';
 import { AddLabelsDto, RemoveLabelDto } from '../label/dto/label.dto';
 import {
@@ -63,6 +65,7 @@ export class PageController {
     private readonly spaceAbility: SpaceAbilityFactory,
     private readonly pageAccessService: PageAccessService,
     private readonly backlinkService: BacklinkService,
+    private readonly pageGraphService: PageGraphService,
     private readonly labelService: LabelService,
     @Inject(AUDIT_SERVICE) private readonly auditService: IAuditService,
   ) {}
@@ -174,6 +177,36 @@ export class PageController {
     await this.pageAccessService.validateCanView(page, user);
 
     return this.backlinkService.countByPageId(page.id, user.id);
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Post('graph')
+  async getPageGraph(@Body() dto: PageGraphDto, @AuthUser() user: User) {
+    if (dto.pageId) {
+      const page = await this.pageRepo.findById(dto.pageId);
+      if (!page) {
+        throw new NotFoundException('Page not found');
+      }
+      await this.pageAccessService.validateCanView(page, user);
+    } else if (dto.spaceId) {
+      const ability = await this.spaceAbility.createForUser(
+        user,
+        dto.spaceId,
+      );
+      if (ability.cannot(SpaceCaslAction.Read, SpaceCaslSubject.Page)) {
+        throw new ForbiddenException();
+      }
+    } else {
+      throw new BadRequestException('pageId or spaceId is required');
+    }
+
+    return this.pageGraphService.getGraph({
+      pageId: dto.pageId,
+      spaceId: dto.spaceId,
+      depth: dto.depth,
+      maxNodes: dto.maxNodes,
+      userId: user.id,
+    });
   }
 
   @HttpCode(HttpStatus.OK)

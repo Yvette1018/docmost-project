@@ -6,7 +6,7 @@ import {
   Text,
   UnstyledButton,
 } from "@mantine/core";
-import { IconChevronRight } from "@tabler/icons-react";
+import { IconChevronRight, IconGraph } from "@tabler/icons-react";
 import { useDisclosure } from "@mantine/hooks";
 import { useAtomValue } from "jotai";
 import { useParams } from "react-router-dom";
@@ -16,6 +16,7 @@ import { usePageQuery } from "@/features/page/queries/page-query.ts";
 import { pageEditorAtom } from "@/features/editor/atoms/editor-atoms.ts";
 import { useBacklinksCountQuery } from "@/features/page-details/queries/backlinks-query.ts";
 import { BacklinksModal } from "./backlinks-modal";
+import { KnowledgeGraphModal } from "@/features/knowledge-graph/components/knowledge-graph-modal";
 import { formattedDate } from "@/lib/time.ts";
 import { useTimeAgo } from "@/hooks/use-time-ago.tsx";
 import { CustomAvatar } from "@/components/ui/custom-avatar.tsx";
@@ -29,6 +30,8 @@ export function PageDetailsAside() {
   const pageEditor = useAtomValue(pageEditorAtom);
   const { data: counts, isLoading: countsLoading } = useBacklinksCountQuery(page?.id);
   const [modalOpened, { open: openModal, close: closeModal }] =
+    useDisclosure(false);
+  const [graphOpened, { open: openGraph, close: closeGraph }] =
     useDisclosure(false);
 
   if (!page) return null;
@@ -62,6 +65,7 @@ export function PageDetailsAside() {
           outgoingCount={counts?.outgoing ?? 0}
           isLoading={countsLoading}
           onClick={openModal}
+          onGraphClick={openGraph}
         />
 
         <LabelsSection
@@ -74,6 +78,12 @@ export function PageDetailsAside() {
         pageId={page.id}
         opened={modalOpened}
         onClose={closeModal}
+      />
+
+      <KnowledgeGraphModal
+        pageId={page.id}
+        opened={graphOpened}
+        onClose={closeGraph}
       />
     </>
   );
@@ -173,11 +183,13 @@ function BacklinksSection({
   outgoingCount,
   isLoading,
   onClick,
+  onGraphClick,
 }: {
   incomingCount: number;
   outgoingCount: number;
   isLoading: boolean;
   onClick: () => void;
+  onGraphClick: () => void;
 }) {
   const { t } = useTranslation();
   return (
@@ -197,6 +209,23 @@ function BacklinksSection({
         isLoading={isLoading}
         onClick={onClick}
       />
+      <UnstyledButton
+        onClick={onGraphClick}
+        style={{
+          padding: "4px 4px",
+          borderRadius: 4,
+        }}
+      >
+        <Group justify="space-between" wrap="nowrap">
+          <Group gap={6} wrap="nowrap">
+            <IconGraph size={16} stroke={2} color="var(--mantine-color-dimmed)" />
+            <Text size="sm" c="dimmed">
+              {t("Knowledge graph")}
+            </Text>
+          </Group>
+          <IconChevronRight size={16} stroke={2} color="var(--mantine-color-dimmed)" />
+        </Group>
+      </UnstyledButton>
     </Stack>
   );
 }

@@ -4,6 +4,7 @@ import { PageController } from './page.controller';
 import { PageHistoryService } from './services/page-history.service';
 import { TrashCleanupService } from './services/trash-cleanup.service';
 import { BacklinkService } from './services/backlink.service';
+import { PageGraphService } from './services/page-graph.service';
 import { StorageModule } from '../../integrations/storage/storage.module';
 import { CollaborationModule } from '../../collaboration/collaboration.module';
 import { WatcherModule } from '../watcher/watcher.module';
@@ -17,6 +18,7 @@ import { LabelModule } from '../label/label.module';
     PageHistoryService,
     TrashCleanupService,
     BacklinkService,
+    PageGraphService,
   ],
   exports: [PageService, PageHistoryService],
   imports: [

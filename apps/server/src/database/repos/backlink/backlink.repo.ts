@@ -110,6 +110,77 @@ export class BacklinkRepo {
     return rows.map((r) => r.relatedId);
   }
 
+  async findEdgesForPageIds(
+    pageIds: string[],
+  ): Promise<Array<{ source: string; target: string }>> {
+    if (pageIds.length === 0) return [];
+
+    const rows = await this.db
+      .selectFrom('backlinks')
+      .innerJoin('pages as sourcePage', 'sourcePage.id', 'backlinks.sourcePageId')
+      .innerJoin('pages as targetPage', 'targetPage.id', 'backlinks.targetPageId')
+      .select([
+        'backlinks.sourcePageId as source',
+        'backlinks.targetPageId as target',
+      ])
+      .where((eb) =>
+        eb.or([
+          eb('backlinks.sourcePageId', 'in', pageIds),
+          eb('backlinks.targetPageId', 'in', pageIds),
+        ]),
+      )
+      .where('sourcePage.deletedAt', 'is', null)
+      .where('targetPage.deletedAt', 'is', null)
+      .execute();
+
+    return rows;
+  }
+
+  async findEdgesInSpace(
+    spaceId: string,
+    limit: number,
+  ): Promise<Array<{ source: string; target: string }>> {
+    const rows = await this.db
+      .selectFrom('backlinks')
+      .innerJoin('pages as sourcePage', 'sourcePage.id', 'backlinks.sourcePageId')
+      .innerJoin('pages as targetPage', 'targetPage.id', 'backlinks.targetPageId')
+      .select([
+        'backlinks.sourcePageId as source',
+        'backlinks.targetPageId as target',
+      ])
+      .where('sourcePage.spaceId', '=', spaceId)
+      .where('targetPage.spaceId', '=', spaceId)
+      .where('sourcePage.deletedAt', 'is', null)
+      .where('targetPage.deletedAt', 'is', null)
+      .limit(limit)
+      .execute();
+
+    return rows;
+  }
+
+  async findGraphNodesByIds(pageIds: string[]) {
+    if (pageIds.length === 0) return [];
+
+    return this.db
+      .selectFrom('pages')
+      .select((eb) => [
+        'pages.id',
+        'pages.slugId',
+        'pages.title',
+        'pages.icon',
+        'pages.spaceId',
+        jsonObjectFrom(
+          eb
+            .selectFrom('spaces')
+            .select(['spaces.id', 'spaces.slug', 'spaces.name'])
+            .whereRef('spaces.id', '=', 'pages.spaceId'),
+        ).as('space'),
+      ])
+      .where('pages.deletedAt', 'is', null)
+      .where('pages.id', 'in', pageIds)
+      .execute();
+  }
+
   async findPagesByIdsPaginated(
     pageIds: string[],
     pagination: PaginationOptions,
